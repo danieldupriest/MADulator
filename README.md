@@ -15,9 +15,11 @@ Developed by Marko, Angelic and Daniel (MAD), this program allows one to explore
 ### Linux packages
 * portaudio19-dev
 
+To install the portaudio package on debian/ubuntu linux systems, run: `sudo apt-get update && sudo apt-get install portaudio19-dev`
+
 ### Python modules
 * pyaudio ([How install pyaudio on Windows for python v3.7](https://stackoverflow.com/questions/54998028/how-do-i-install-pyaudio-on-python-3-7))
-* pyqt5
+* PySide2e
 * pyqtgraph
 * numpy
 * pickle (installed by default)
@@ -27,7 +29,7 @@ To install the required modules, use the following command: `pip3 install -r req
 
 ## Running
 
-First install the required modules above, then run:
+First install the required modules above, then inside the `src/` direcdtory, run:
 
 ```python3 app.py```
 
