@@ -1,11 +1,11 @@
-from pyqtgraph.Qt import QtGui
+from PySide2 import QtCore, QtWidgets
 from madulator import Madulator
 
-app = QtGui.QApplication([])
+app = QtWidgets.QApplication([])
 mad = Madulator()
 
-## Start Qt event loop unless running in interactive mode.
+# Start Qt event loop unless running in interactive mode.
 if __name__ == '__main__':
     import sys
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        QtWidgets.QApplication.instance().exec_()

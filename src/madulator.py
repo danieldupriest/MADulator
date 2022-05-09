@@ -1,6 +1,8 @@
 import pyaudio as pa
 import pickle
 import os
+from PySide2 import QtCore, QtGui, QtWidgets
+
 from generator import Generator
 from samples import Samples
 from waveform import Waveform
@@ -31,7 +33,8 @@ class Madulator(pg.GraphicsView):
         self.layout.nextRow()
         self.setup_editor()
         self.setup_index()
-        self.samples = Samples(self.waveform.data_available, self.spectrograph.data_available)
+        self.samples = Samples(self.waveform.data_available,
+                               self.spectrograph.data_available)
         self.copy_func_to_samples()
         self.copy_func_to_editor_and_display()
         self.setup_pyaudio()
@@ -39,11 +42,11 @@ class Madulator(pg.GraphicsView):
 
     def setup_pyaudio(self) -> None:
         self.pa = pa.PyAudio()
-        self.stream = self.pa.open(format = pa.paUInt8,
-            channels = 1,
-            rate = BITRATE,
-            output = True,
-            stream_callback=self.samples.pyaudio_callback)
+        self.stream = self.pa.open(format=pa.paUInt8,
+                                   channels=1,
+                                   rate=BITRATE,
+                                   output=True,
+                                   stream_callback=self.samples.pyaudio_callback)
 
     def keyPressEvent(self, ev: QtGui.QKeyEvent) -> None:
         key = ev.key()
@@ -93,9 +96,10 @@ class Madulator(pg.GraphicsView):
                 self.restart_stream()
             else:
                 self.update_editor_info()
-        
+
     def update_index_speed_text(self):
-        self.index_text.setText("Function index: {:d} | Playback speed: {:.2f}".format(self.function_index, self.samples.get_playback_speed()))
+        self.index_text.setText("Function index: {:d} | Playback speed: {:.2f}".format(
+            self.function_index, self.samples.get_playback_speed()))
 
     # Key press events
     def terminate_program(self) -> None:
@@ -114,11 +118,12 @@ class Madulator(pg.GraphicsView):
 
     def save_wav(self) -> None:
         # Save waveform
-        duration, ok = QtGui.QInputDialog.getInt(self, "Seconds of Audio:", "Seconds:",
-            1, 0, MAX_VAL, STEP_VAL)
+        duration, ok = QtWidgets.QInputDialog.getInt(self, "Seconds of Audio:", "Seconds:",
+                                                     1, 0, MAX_VAL, STEP_VAL)
         if ok:
-            dialog = QtGui.QFileDialog()
-            path = dialog.getSaveFileName(self, 'Save File', os.getenv('HOME'), 'WAV (*.wav)')
+            dialog = QtWidgets.QFileDialog()
+            path = dialog.getSaveFileName(
+                self, 'Save File', os.getenv('HOME'), 'WAV (*.wav)')
             if path[0] != '':
                 samples = Samples()
                 expression = copy.deepcopy(self.expression)
@@ -127,8 +132,9 @@ class Madulator(pg.GraphicsView):
 
     def save_func(self) -> None:
         # Save and download a function
-        dialog = QtGui.QFileDialog()
-        path = dialog.getSaveFileName(self, 'Save File', 'save/', 'MAD (*.mad)')
+        dialog = QtWidgets.QFileDialog()
+        path = dialog.getSaveFileName(
+            self, 'Save File', 'save/', 'MAD (*.mad)')
         if path[0] != '':
             with open(path[0], 'wb') as out_file:
                 exp = self.samples.get_expression()
@@ -138,8 +144,9 @@ class Madulator(pg.GraphicsView):
         # Load a function from computer
         if self.stream.is_active():
             self.stream.stop_stream()
-        dialog = QtGui.QFileDialog()
-        path = dialog.getOpenFileName(self, 'Open File', 'save/', "MAD (*.mad)")
+        dialog = QtWidgets.QFileDialog()
+        path = dialog.getOpenFileName(
+            self, 'Open File', 'save/', "MAD (*.mad)")
         if path[0] != '':
             with open(path[0], 'rb') as in_file:
                 exp = pickle.load(in_file)
@@ -178,10 +185,12 @@ class Madulator(pg.GraphicsView):
         self.update_index_speed_text()
 
     def get_index(self) -> None:
-        val, ok = QtGui.QInputDialog.getInt(self, "Input Index:", "Index:", 1, 1, 2**30, 1)
+        val, ok = QtWidgets.QInputDialog.getInt(
+            self, "Input Index:", "Index:", 1, 1, 2**30, 1)
         if ok:
             self.function_index = val
-            self.index_text.setText("Random function index: " + str(self.function_index))
+            self.index_text.setText(
+                "Random function index: " + str(self.function_index))
             self.generator = Generator(self.function_index)
             self.expression = self.generator.random_function()
             self.copy_func_to_samples()
@@ -219,7 +228,7 @@ class Madulator(pg.GraphicsView):
 
     def get_number(self) -> int:
         val, ok = QtGui.QInputDialog.getInt(self, "Input Value:", "Value:",
-            DEFAULT_VAL, MIN_VAL, MAX_VAL, STEP_VAL)
+                                            DEFAULT_VAL, MIN_VAL, MAX_VAL, STEP_VAL)
         if ok:
             return val
         return -1
@@ -285,4 +294,5 @@ class Madulator(pg.GraphicsView):
     def setup_index(self) -> None:
         self.index_text = pg.LabelItem(name='Index')
         self.layout.addItem(self.index_text)
-        self.index_text.setText("Function index: {:d} | Playback speed: 1.00".format(self.function_index))
+        self.index_text.setText(
+            "Function index: {:d} | Playback speed: 1.00".format(self.function_index))

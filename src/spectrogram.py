@@ -1,6 +1,6 @@
 import numpy as np
 import pyqtgraph as pg
-from PyQt5 import QtCore, QtGui
+from PySide2 import QtCore
 np.seterr(divide='ignore')
 
 CHUNK = 1024
@@ -8,18 +8,20 @@ SPECTROGRAM_WIDTH = 256
 
 
 class SpectrogramWidget(pg.PlotItem):
-    data_available = QtCore.pyqtSignal(np.ndarray)
+    data_available = QtCore.Signal(np.ndarray)
 
     def __init__(self, bitrate: int):
         super(SpectrogramWidget, self).__init__()
         self.data_available.connect(self.update)
         self.bitrate = bitrate
-        self.img = pg.ImageItem(np.random.normal(size=(100,60)), title="Spectrograph")
+        self.img = pg.ImageItem(np.random.normal(
+            size=(100, 60)), title="Spectrograph")
         self.addItem(self.img)
         self.img_array = np.zeros((SPECTROGRAM_WIDTH, CHUNK//2+1))
 
         position = [0.0, 0.25, 0.5, 0.75, 1.0]
-        colors = [[0, 0, 0, 255], [0, 0, 256, 255], [256, 0, 0, 255], [242, 125, 0, 255], [253, 207, 88, 255]]
+        colors = [[0, 0, 0, 255], [0, 0, 256, 255], [
+            256, 0, 0, 255], [242, 125, 0, 255], [253, 207, 88, 255]]
         bi_polar_color_map = pg.ColorMap(position, colors)
         lookup_table = bi_polar_color_map.getLookupTable(0.0, 1.0, 256)
 

@@ -1,9 +1,9 @@
-from pyqtgraph.Qt import QtGui, QtCore
+from PySide2.QtCore import Signal
 import pyqtgraph as pg
 
 
 class Waveform(pg.PlotItem):
-    data_available = QtCore.pyqtSignal(list)
+    data_available = Signal(list)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

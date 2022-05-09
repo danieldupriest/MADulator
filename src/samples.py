@@ -1,4 +1,4 @@
-from pyqtgraph.Qt import QtCore, QtGui
+from PySide2 import QtCore
 from expression import *
 from pyaudio import *
 import threading
@@ -16,7 +16,7 @@ DEFAULT_PLAYBACK_SPEED: float = 1.0
 
 class Samples:
 
-    def __init__(self, waveform_signal: QtCore.pyqtSignal = None, spectrogram_signal: QtCore.pyqtSignal = None):
+    def __init__(self, waveform_signal: QtCore.Signal = None, spectrogram_signal: QtCore.Signal = None):
         self.expression = None
         self.lock = threading.Lock()
         self.waveform_signal = waveform_signal
@@ -76,7 +76,8 @@ class Samples:
         self.waveform_signal.emit(self.samples[-SAMPLES_TO_EMIT_LENGTH:])
 
     def emit_spectrogram_signal(self):
-        self.spectrogram_signal.emit(np.asarray(self.samples[-SAMPLES_TO_EMIT_LENGTH:]))
+        self.spectrogram_signal.emit(np.asarray(
+            self.samples[-SAMPLES_TO_EMIT_LENGTH:]))
 
     def reset_playback_speed(self):
         self.step_value = DEFAULT_PLAYBACK_SPEED
